@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Article Navigator",
+  "version": "1.0",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["http://localhost:8080/*"],
+  "action": { "default_popup": "popup.html" },
+  "content_scripts": [
+    { "matches": ["*://*/*"], "js": ["content.js"] }
+  ]
+}
