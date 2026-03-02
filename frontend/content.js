@@ -5,7 +5,7 @@ window.addEventListener("message", async (event) => {
     const query = event.data.query;
     console.log("Query:", query);
 
-    // ✅ DO NOT rely on article container
+   
     const paragraphsArray = Array.from(
         document.querySelectorAll("h1, h2, h3, p, li")
     ).filter(el => {
@@ -16,6 +16,8 @@ window.addEventListener("message", async (event) => {
             el.offsetParent !== null // visible elements only
         );
     });
+
+       console.log("Paragraph count:", paragraphsArray.length);
 
     if (paragraphsArray.length === 0) {
         console.warn("No readable content found on page.");

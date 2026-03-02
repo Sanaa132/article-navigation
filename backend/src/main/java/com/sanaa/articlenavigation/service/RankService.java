@@ -2,6 +2,7 @@ package com.sanaa.articlenavigation.service;
 
 import com.sanaa.articlenavigation.model.RankRequest;
 import com.sanaa.articlenavigation.model.RankResponse;
+import com.sanaa.articlenavigation.util.StringSimilarity;
 import com.sanaa.articlenavigation.util.TextProcessor;
 import org.springframework.stereotype.Service;
 
@@ -30,20 +31,23 @@ public class RankService {
 
         List<RankResponse> responses=new ArrayList<>();
 
-        for(int i=0;i<paragraphs.size();i++){
-            String para= paragraphs.get(i);
+
+
+        for(int i=0;i<paragraphs.size();i++) {
+            String para = paragraphs.get(i);
             List<String> paraTokens = TextProcessor.tokenize(para);
             long count = queryTokens.stream()
-                    .filter(paraTokens::contains)
+                    .filter(qt -> paraTokens.stream()
+                            .anyMatch(pt -> pt.equals(qt) || StringSimilarity.fuzzyMatch(pt, qt))
+                    )
                     .count();
 
-            double score= queryTokens.isEmpty() ? 0.0: (double) count/queryTokens.size();
-            responses.add(new RankResponse(i,score));
-        }
+            double score = queryTokens.isEmpty() ? 0.0 : (double) count / queryTokens.size();
 
-        responses = responses.stream()
-                .filter(r -> r.getScore() > 0)
-                .toList();
+            if (score >= 0.3) {
+                responses.add(new RankResponse(i, score));
+            }
+        }
 
         responses = responses.stream()
                 .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
@@ -53,4 +57,5 @@ public class RankService {
         return responses;
 
     }
-}
+
+    }
