@@ -20,10 +20,14 @@ public class StringSimilarity {
             return dp[a.length()][b.length()];
         }
 
-        public static boolean fuzzyMatch(String a, String b) {
-            if (a.length() < 3 || b.length() < 3) return false;
-            int dist = distance(a, b);
-            return dist <= 1; // tolerance
-        }
+    public static boolean fuzzyMatch(String a, String b) {
+
+        if (a.length() < 4 || b.length() < 4) return false;
+
+        int dist = distance(a, b);
+        int maxAllowed = Math.max(1, Math.min(2, a.length() / 4) );
+
+        return dist <= maxAllowed;
+    }
     }
 
