@@ -1,12 +1,53 @@
-# Backend (Spring Boot)
-/backend/target/
-/backend/.idea/
-
-# Frontend
-/frontend/node_modules/
-/frontend/dist/
-/frontend/.vscode/
-
-# Common
-.env
+# ------------------------
+# OS FILES
+# ------------------------
 .DS_Store
+Thumbs.db
+
+# ------------------------
+# IDE FILES
+# ------------------------
+.idea/
+.vscode/
+*.iml
+
+# ------------------------
+# FRONTEND (JS / Chrome Extension)
+# ------------------------
+node_modules/
+dist/
+build/
+
+# ------------------------
+# BACKEND (Spring Boot / Java)
+# ------------------------
+target/
+*.class
+*.jar
+*.war
+
+# Logs
+*.log
+
+# ------------------------
+# PYTHON SERVER
+# ------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# ------------------------
+# ENV / SECRETS
+# ------------------------
+.env
+
+# ------------------------
+# CACHE / TEMP
+# ------------------------
+.cache/

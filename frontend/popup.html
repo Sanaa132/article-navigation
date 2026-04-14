@@ -1,8 +1,248 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Article Navigator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #ffffff;
+      --surface:     #f5f5f4;
+      --border:      #e5e5e4;
+      --text:        #1c1917;
+      --text-muted:  #78716c;
+      --accent:      #f59e0b;
+      --accent-dark: #d97706;
+      --accent-bg:   #fffbeb;
+      --success:     #10b981;
+      --danger:      #ef4444;
+      --radius:      10px;
+      --shadow:      0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      width: 340px;
+      min-height: 160px;
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .logo {
+      width: 28px; height: 28px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* ── Search box ── */
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .search-input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .btn-search {
+      padding: 9px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn-search:hover  { background: var(--accent-dark); }
+    .btn-search:active { transform: scale(0.97); }
+    .btn-search:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Status / error ── */
+    .status {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 4px 0 8px;
+      min-height: 24px;
+    }
+    .status.error   { color: var(--danger); }
+    .status.loading { color: var(--accent-dark); }
+
+    /* ── Results panel ── */
+    .results {
+      display: none;
+      background: var(--accent-bg);
+      border: 1.5px solid #fde68a;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-top: 4px;
+    }
+    .results.visible { display: block; }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .match-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .match-counter {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent-dark);
+      background: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    /* ── Nav buttons ── */
+    .nav-row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-nav {
+      flex: 1;
+      padding: 8px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .btn-nav:hover {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+      color: var(--accent-dark);
+    }
+    .btn-nav:active { transform: scale(0.97); }
+
+    .btn-clear {
+      padding: 8px 10px;
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-clear:hover { color: var(--danger); border-color: var(--danger); }
+
+    /* ── Loading spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border: 2px solid #fde68a;
+      border-top-color: var(--accent-dark);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  </style>
+</head>
 <body>
-  <input type="text" id="query" placeholder="Search term">
-  <button id="searchBtn">Search</button>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">&#x1F50D;</div>
+    <div>
+      <div class="title">Article Navigator</div>
+      <div class="subtitle">Find relevant paragraphs instantly</div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-row">
+    <input
+      id="queryInput"
+      class="search-input"
+      type="text"
+      placeholder="e.g. limitations of operating systems"
+      autocomplete="off"
+    />
+    <button id="searchBtn" class="btn-search">Search</button>
+  </div>
+
+  <!-- Status line -->
+  <div id="status" class="status"></div>
+
+  <!-- Results -->
+  <div id="results" class="results">
+    <div class="results-header">
+      <span class="match-label">Navigating matches</span>
+      <span id="counter" class="match-counter">1 of 5</span>
+    </div>
+    <div class="nav-row">
+      <button id="prevBtn" class="btn-nav">&#8592; Prev</button>
+      <button id="nextBtn" class="btn-nav">Next &#8594;</button>
+      <button id="clearBtn" class="btn-clear">&#x2715;</button>
+    </div>
+  </div>
 
   <script src="popup.js"></script>
 </body>

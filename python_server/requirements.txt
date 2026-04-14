@@ -1,0 +1,9 @@
+
+fastapi
+uvicorn[standard]
+sentence-transformers
+rapidfuzz
+nltk
+torch
+scikit-learn
+pydantic

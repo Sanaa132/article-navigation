@@ -2,60 +2,50 @@ package com.sanaa.articlenavigation.service;
 
 import com.sanaa.articlenavigation.model.RankRequest;
 import com.sanaa.articlenavigation.model.RankResponse;
-import com.sanaa.articlenavigation.util.StringSimilarity;
-import com.sanaa.articlenavigation.util.TextProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class RankService {
 
-    public List<RankResponse> processArticle(RankRequest request) {
+    @Autowired
+    private PreprocessingService preprocessingService;
 
-        if (request.getArticle() == null || request.getArticle().isBlank()) {
-            return List.of();
+    @Autowired
+    private PythonClient pythonClient;
+
+    public RankResponse rank(RankRequest request) {
+
+        // 1. Validate input (don’t skip this)
+        if (request == null || request.getQuery() == null || request.getParagraphs() == null) {
+            throw new IllegalArgumentException("Invalid request data");
         }
 
-        List<String> paragraphs = TextProcessor.splitIntoParagraphs(request.getArticle());
-
-        /*List<String> cleanedParagraphs= paragraphs.stream()
-                .map(TextProcessor::normalize)
-                .toList(); */
-
-        if (request.getQuery() == null || request.getQuery().isBlank()) {
-            return List.of();
-        }
-        List<String> queryTokens= TextProcessor.tokenize((request.getQuery()));
-
-        List<RankResponse> responses=new ArrayList<>();
-
-
-
-        for(int i=0;i<paragraphs.size();i++) {
-            String para = paragraphs.get(i);
-            List<String> paraTokens = TextProcessor.tokenize(para);
-            long count = queryTokens.stream()
-                    .filter(qt -> paraTokens.stream()
-                            .anyMatch(pt -> pt.equals(qt) || StringSimilarity.fuzzyMatch(pt, qt))
-                    )
-                    .count();
-
-            double score = queryTokens.isEmpty() ? 0.0 : (double) count / queryTokens.size();
-
-            if (score >= 0.3) {
-                responses.add(new RankResponse(i, score));
-            }
+        if (request.getParagraphs().isEmpty()) {
+            return new RankResponse(List.of());
         }
 
-        responses = responses.stream()
-                .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
-                .limit(5)
-                .toList();
+        // 2. Preprocess query (basic cleaning only)
+        String processedQuery = preprocessingService.process(request.getQuery());
 
-        return responses;
+        // 3. Call Python NLP engine
+        List<Integer> rankedIndices = pythonClient.getRankedParagraphs(
+                processedQuery,
+                request.getParagraphs()
+        );
 
+        // 4. Safety fallback (important)
+        if (rankedIndices == null || rankedIndices.isEmpty()) {
+            // fallback: return original order
+            rankedIndices = java.util.stream.IntStream
+                    .range(0, request.getParagraphs().size())
+                    .boxed()
+                    .toList();
+        }
+
+        // 5. Return response
+        return new RankResponse(rankedIndices);
     }
-
-    }
+}

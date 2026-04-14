@@ -1,14 +1,30 @@
 package com.sanaa.articlenavigation.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RankRequest {
-    private String article;
-    private String query;
 
+    private String query;
+    private List<String> paragraphs;
+
+    // Default constructor (REQUIRED for JSON)
+    public RankRequest() {}
+
+    // Getters
+    public String getQuery() {
+        return query;
+    }
+
+    public List<String> getParagraphs() {
+        return paragraphs;
+    }
+
+    // Setters
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public void setParagraphs(List<String> paragraphs) {
+        this.paragraphs = paragraphs;
+    }
 }
