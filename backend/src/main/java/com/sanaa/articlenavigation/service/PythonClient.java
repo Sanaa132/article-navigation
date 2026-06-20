@@ -12,6 +12,7 @@ public class PythonClient {
     private final RestTemplate restTemplate;
 
     public PythonClient() {
+
         this.restTemplate = new RestTemplate();
     }
 

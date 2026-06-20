@@ -19,7 +19,7 @@ let hasResults    = false; // whether we currently have ranked results
 
 function setStatus(msg, type = '') {
   statusEl.className = `status ${type}`;
-  statusEl.innerHTML = msg;
+  statusEl.innerHTML = msg;    //innerHTML makes it vulnerable for xss 
 }
 
 function showResults(current, total) {
@@ -172,8 +172,7 @@ async function handleClear() {
 
 // ── Event listeners ───────────────────────────────────────────────────────────
 
-searchBtn.addEventListener('click', handleSearch);
-
+searchBtn.addEventListener('click', handleSearch);  //*handleSearch() ?? check this syntax, 
 // Enter key triggers search
 queryInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') handleSearch();

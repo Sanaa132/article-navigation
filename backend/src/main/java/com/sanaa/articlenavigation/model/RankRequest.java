@@ -7,7 +7,7 @@ public class RankRequest {
     private String query;
     private List<String> paragraphs;
 
-    // Default constructor (REQUIRED for JSON)
+    // Default constructor (REQUIRED for Jackson library (JSON -> Java Object)
     public RankRequest() {}
 
     // Getters

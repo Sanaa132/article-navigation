@@ -1,0 +1,6 @@
+Future improvements 
+
+1.in Rankservice  - add number 
+2.update cross origin 
+3.update all urks in manifest.json
+4.maintain the log for what input my system got failed

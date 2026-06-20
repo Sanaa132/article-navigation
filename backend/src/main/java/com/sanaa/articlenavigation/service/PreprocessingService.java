@@ -15,6 +15,7 @@ public class PreprocessingService {
         String cleaned = query.toLowerCase();
 
         // 2. Remove special characters (keep only letters + space)
+        //add numbers also
         cleaned = cleaned.replaceAll("[^a-zA-Z ]", "");
 
         // 3. Remove extra spaces

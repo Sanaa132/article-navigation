@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*") // allow extension + browser calls
+@CrossOrigin(origins = "*") // allow extension + browser calls (should change later)
 public class RankController {
 
     @Autowired
